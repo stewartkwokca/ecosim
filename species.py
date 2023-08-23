@@ -44,6 +44,9 @@ class Species():
         self.x = max(min(screen.WORLDWIDTH-20, self.x), 20)
         self.y = max(min(screen.WORLDHEIGHT-20, self.y), 20)
 
+        if self.x == 20 or self.x == screen.WORLDWIDTH-20  or self.y == 20 or self.y == screen.WORLDWIDTH-20:
+            self.angle += math.pi
+
     def collision(self, other, called=False):
         if called:
             return (int(self.x - self.size/2) in range(int(other.x-other.size/2), int(other.x + other.size/2)) or int(self.x - self.size/2) in range(int(other.x-other.size/2), int(other.x + other.size/2))) and (int(self.y-self.size/2) in range(int(other.y-other.size/2), int(other.y + other.size/2)) or int(self.y+self.size/2) in range(int(other.y-other.size/2), int(other.y + other.size/2)))
@@ -118,6 +121,11 @@ class Animal(Species):
         if type(other) in self.food_species:
             self.angle = math.radians(math.degrees(math.atan2(self.y-other.y, other.x-self.x))%360)
             self.sprinting = True
+
+    def flee(self, other):
+        if type(self) in other.food_species:
+            self.sprinting = True
+            self.angle = math.atan2(self.y-other.y, other.x-self.x) + math.pi
 
 # Specific Species
 

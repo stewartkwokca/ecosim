@@ -12,7 +12,7 @@ cam = Camera()
 running = True
 
 cheetahs = [Cheetah(random.randint(20, screen.WORLDWIDTH-20), random.randint(20, screen.WORLDHEIGHT-20), 1, cam) for i in range(10)]
-impalas = [Impala(random.randint(20, screen.WORLDWIDTH-20), random.randint(20, screen.WORLDHEIGHT-20), 1, cam) for i in range(200)]
+impalas = [Impala(random.randint(20, screen.WORLDWIDTH-20), random.randint(20, screen.WORLDHEIGHT-20), 1, cam) for i in range(150)]
 
 while running:
     for event in pygame.event.get():
@@ -50,12 +50,15 @@ while running:
                 impalas.append(Impala(impala.x, impala.y, 1, cam))
             if impala.canSee(i) and impala.ticksSinceMate >= impala.ticksToMate and i.ticksSinceMate >= i.ticksToMate:
                 impala.angle = math.atan2(impala.y-i.y, i.x-impala.x)
+        for cheetah in cheetahs:
+            if impala.canSee(cheetah):
+                impala.flee(cheetah)
         impala.tick()
         impala.render(window)
-    font = pygame.font.SysFont("Arial", 36)
-    txt = font.render(str(len(cheetahs)), True, (255, 255, 255))
-    txt2 = font.render(str(len(impalas)), True, (255, 255, 255))
-    window.blit(txt, (500, 500))
-    window.blit(txt2, (500, 600))
+    font = pygame.font.SysFont("Arial", 12)
+    txt = font.render(f"Cheetahs: {len(cheetahs)}", True, (255, 255, 255))
+    txt2 = font.render(f"Impalas: {len(impalas)}", True, (255, 255, 255))
+    window.blit(txt, (700, 25))
+    window.blit(txt2, (700, 50))
     time.sleep(0.05)
     pygame.display.update()
