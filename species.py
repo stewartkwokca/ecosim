@@ -50,6 +50,9 @@ class Species():
         self.renderx = self.x - self.cam.xOffset
         self.rendery = self.y - self.cam.yOffset
 
+    def distTo(self, other):
+        return math.sqrt((other.x - self.x) ** 2 + (other.y - self.y) ** 2)
+
 class Plant(Species):
     def __init__(self, x, y, basesize, size, render_color, cam):
         super().__init__(x, y, [], 0, basesize, size, render_color, cam, hetero=False)
@@ -91,8 +94,8 @@ class Animal(Species):
             pygame.draw.rect(scrn, self.render_color, pygame.Rect(self.renderx-self.size/2, self.rendery-self.size/2, self.size, self.size))
 
     def renderSight(self, scrn):
-        eyesight_angle_rad = self.eyesight_angle * math.pi / 180
-        pygame.draw.arc(scrn, (255, 255, 255), pygame.Rect(self.renderx-self.size/2-self.eyesight_dist/2, self.rendery-self.size/2-self.eyesight_dist/2, self.size+self.eyesight_dist, self.size+self.eyesight_dist), self.angle-eyesight_angle_rad/2, self.angle+eyesight_angle_rad/2)
+        eyesight_angle_rad = math.radians(self.eyesight_angle)
+        pygame.draw.arc(scrn, (255, 255, 255), pygame.Rect(self.renderx-self.size/2-self.eyesight_dist, self.rendery-self.size/2-self.eyesight_dist, self.size+2*self.eyesight_dist, self.size+2*self.eyesight_dist), self.angle-eyesight_angle_rad/2, self.angle+eyesight_angle_rad/2)
 
     def breedHetero(self, other):
         if self.ticksSinceMate >= self.ticksToMate and other.ticksSinceMate >= other.ticksToMate:
@@ -100,7 +103,10 @@ class Animal(Species):
             other.ticksSinceMate = 0
             return True
 
-
+    def canSee(self, other):
+        targetDegrees = int(math.degrees(math.atan2(self.y-other.y, other.x-self.x)))
+        print(f"{(targetDegrees-int(math.degrees(self.angle)))%360 <= (self.eyesight_angle/2)}, {(targetDegrees-int(math.degrees(self.angle)))%360}")
+        return self.distTo(other) <= self.eyesight_dist and (targetDegrees-int(math.degrees(self.angle)))%360 <= (self.eyesight_angle/2)
 
 # Specific Species
 
