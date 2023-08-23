@@ -14,14 +14,15 @@ class Species():
         self.y = y
         self.food_species = food
         self.food_needed = food_needed * size
-        self.speed = 5*size
-        self.sprintspeed = sprintspeed
-        self.size = basesize * size
+        self.speed = 5*size*0.1
+        self.sprintspeed = sprintspeed*0.1
+        self.size = basesize * size * 3
         self.hetero = hetero
         self.render_color = render_color
         self.angle = random.random() * 2 * math.pi
 
         self.dead = False
+        self.sprinting = False
         self.cam = cam
 
         self.renderx = self.x
@@ -33,9 +34,12 @@ class Species():
             self.angle -= 2*math.pi
         while self.angle < 0:
             self.angle += 2*math.pi
-
-        self.x += self.speed * math.cos(self.angle)
-        self.y += -1 * self.speed * math.sin(self.angle)
+        if self.sprinting:
+            self.x += self.sprintspeed * math.cos(self.angle)
+            self.y += -1 * self.sprintspeed * math.sin(self.angle)
+        else:
+            self.x += self.speed * math.cos(self.angle)
+            self.y += -1 * self.speed * math.sin(self.angle)
 
         self.x = max(min(screen.WORLDWIDTH-20, self.x), 20)
         self.y = max(min(screen.WORLDHEIGHT-20, self.y), 20)
@@ -109,6 +113,11 @@ class Animal(Species):
         if angleDiff > 180:
             angleDiff = 360 - angleDiff
         return self.distTo(other) <= self.eyesight_dist and angleDiff <= (self.eyesight_angle/2)
+
+    def hunt(self, other):
+        if type(other) in self.food_species:
+            self.angle = math.radians(math.degrees(math.atan2(self.y-other.y, other.x-self.x))%360)
+            self.sprinting = True
 
 # Specific Species
 

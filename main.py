@@ -32,8 +32,9 @@ while running:
             if cheetah.collision(impala):
                 impalas.remove(impala)
                 cheetah.food_eaten += 1
-            if cheetah.canSee(impala):
-                print(math.degrees(cheetah.angle))
+                cheetah.sprinting = False
+            if len(impalas) > 0 and cheetah.canSee(impala):
+                cheetah.hunt(impala)
         for c in cheetahs:
             if c != cheetah and cheetah.collision(c) and cheetah.breedHetero(c):
                 cheetahs.append(Cheetah(cheetah.x, cheetah.y, 1, cam))
@@ -50,5 +51,5 @@ while running:
     txt2 = font.render(str(len(impalas)), True, (255, 255, 255))
     window.blit(txt, (500, 500))
     window.blit(txt2, (500, 600))
-    time.sleep(1)
+    time.sleep(0.05)
     pygame.display.update()
