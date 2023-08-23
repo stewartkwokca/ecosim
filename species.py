@@ -104,9 +104,11 @@ class Animal(Species):
             return True
 
     def canSee(self, other):
-        targetDegrees = int(math.degrees(math.atan2(self.y-other.y, other.x-self.x)))
-        print(f"{(targetDegrees-int(math.degrees(self.angle)))%360 <= (self.eyesight_angle/2)}, {(targetDegrees-int(math.degrees(self.angle)))%360}")
-        return self.distTo(other) <= self.eyesight_dist and (targetDegrees-int(math.degrees(self.angle)))%360 <= (self.eyesight_angle/2)
+        targetDegrees = math.degrees(math.atan2(self.y-other.y, other.x-self.x))%360
+        angleDiff = abs(targetDegrees-math.degrees(self.angle)%360)
+        if angleDiff > 180:
+            angleDiff = 360 - angleDiff
+        return self.distTo(other) <= self.eyesight_dist and angleDiff <= (self.eyesight_angle/2)
 
 # Specific Species
 

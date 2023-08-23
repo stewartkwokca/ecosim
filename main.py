@@ -11,8 +11,8 @@ cam = Camera()
 
 running = True
 
-cheetahs = [Cheetah(30, 30, 1, cam)]
-impalas = [Impala(100, 100, 1, cam)]
+cheetahs = [Cheetah(200, 200, 1, cam)]
+impalas = [Impala(250, 250, 1, cam)]
 #cheetahs = [Cheetah(random.randint(20, screen.WORLDWIDTH-20), random.randint(20, screen.WORLDHEIGHT-20), 1, cam) for i in range(6)]
 #impalas = [Impala(random.randint(20, screen.WORLDWIDTH-20), random.randint(20, screen.WORLDHEIGHT-20), 1, cam) for i in range(100)]
 
@@ -33,7 +33,7 @@ while running:
                 impalas.remove(impala)
                 cheetah.food_eaten += 1
             if cheetah.canSee(impala):
-                print(cheetah.angle)
+                print(math.degrees(cheetah.angle))
         for c in cheetahs:
             if c != cheetah and cheetah.collision(c) and cheetah.breedHetero(c):
                 cheetahs.append(Cheetah(cheetah.x, cheetah.y, 1, cam))
