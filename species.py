@@ -28,28 +28,12 @@ class Species():
         self.renderx = self.x
         self.rendery = self.y
 
-        self.ticks_sprinted = 0
-        self.SPRINT_TICKS= 20
-        self.ticks_rested = 0
-        self.REST_TICKS = 40
-
     def move(self):
         self.angle += random.uniform(-1*MOVE_ANGLE, MOVE_ANGLE)
         while self.angle >= 2*math.pi:
             self.angle -= 2*math.pi
         while self.angle < 0:
             self.angle += 2*math.pi
-
-        if self.sprinting:
-            if self.ticks_sprinted >= self.SPRINT_TICKS:
-                self.sprinting = False
-            else:
-                self.ticks_sprinted += 1
-        elif self.ticks_sprinted > 0:
-            self.ticks_rested += 1
-            if self.ticks_rested >= self.REST_TICKS:
-                self.ticks_rested = 0
-                self.ticks_sprinted = 0
 
         if self.x == 20 or self.x == screen.WORLDWIDTH-20  or self.y == 20 or self.y == screen.WORLDWIDTH-20:
             self.angle += math.pi
