@@ -3,7 +3,7 @@ import pygame.draw
 import random
 import screen
 
-MOVE_ANGLE = math.pi/6
+MOVE_ANGLE = math.pi/20
 FOOD_TICKS = 1000 # 1 week
 
 ## Base Classes ##
@@ -14,8 +14,8 @@ class Species():
         self.y = y
         self.food_species = food
         self.food_needed = food_needed * size
-        self.speed = 5*size*0.1
-        self.sprintspeed = sprintspeed*0.1
+        self.speed = 5*size*0.2
+        self.sprintspeed = sprintspeed*0.2
         self.size = basesize * size * 3
         self.hetero = hetero
         self.render_color = render_color

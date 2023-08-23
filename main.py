@@ -11,10 +11,8 @@ cam = Camera()
 
 running = True
 
-cheetahs = [Cheetah(200, 200, 1, cam)]
-impalas = [Impala(250, 250, 1, cam)]
-#cheetahs = [Cheetah(random.randint(20, screen.WORLDWIDTH-20), random.randint(20, screen.WORLDHEIGHT-20), 1, cam) for i in range(6)]
-#impalas = [Impala(random.randint(20, screen.WORLDWIDTH-20), random.randint(20, screen.WORLDHEIGHT-20), 1, cam) for i in range(100)]
+cheetahs = [Cheetah(random.randint(20, screen.WORLDWIDTH-20), random.randint(20, screen.WORLDHEIGHT-20), 1, cam) for i in range(6)]
+impalas = [Impala(random.randint(20, screen.WORLDWIDTH-20), random.randint(20, screen.WORLDHEIGHT-20), 1, cam) for i in range(100)]
 
 while running:
     for event in pygame.event.get():
@@ -28,11 +26,11 @@ while running:
             cheetahs.remove(cheetah)
         cheetah.tick()
         cheetah.render(window)
+        cheetah.sprinting = False
         for impala in impalas:
             if cheetah.collision(impala):
                 impalas.remove(impala)
                 cheetah.food_eaten += 1
-                cheetah.sprinting = False
             if len(impalas) > 0 and cheetah.canSee(impala):
                 cheetah.hunt(impala)
         for c in cheetahs:
