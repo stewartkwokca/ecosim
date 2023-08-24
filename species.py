@@ -9,7 +9,7 @@ FOOD_TICKS = 1000 # 1 week
 ## Base Classes ##
 
 class Species():
-    def __init__(self, x, y, food, sprintspeed, basesize, size, render_color, cam, hetero=True, food_needed=0):
+    def __init__(self, x, y, food, sprintspeed, basesize, size, render_color, cam, hetero=True, food_needed=0, stamina=50, rest_needed=100):
         self.x = x
         self.y = y
         self.food_species = food
@@ -28,25 +28,45 @@ class Species():
         self.renderx = self.x
         self.rendery = self.y
 
+        self.stamina = stamina
+        self.rest_needed = rest_needed
+        self.sprint_ticks=0
+        self.rest_ticks = 0
+
+
     def move(self):
-        self.angle += random.uniform(-1*MOVE_ANGLE, MOVE_ANGLE)
+        self.pick_direction()
+        self.standardize_angle()
+
+        if self.sprinting and self.sprint_ticks < self.stamina:
+            self.x += self.sprintspeed * math.cos(self.angle)
+            self.y += -1 * self.sprintspeed * math.sin(self.angle)
+            self.sprint_ticks += 1
+            self.rest_ticks = 0
+        else:
+            self.x += self.speed * math.cos(self.angle)
+            self.y += -1 * self.speed * math.sin(self.angle)
+            if self.rest_ticks < self.rest_needed:
+                self.rest_ticks += 1
+            else:
+                self.sprint_ticks = 0
+
+        self.stay_in_bounds()
+
+    def standardize_angle(self):
         while self.angle >= 2*math.pi:
             self.angle -= 2*math.pi
         while self.angle < 0:
             self.angle += 2*math.pi
 
-        if self.x == 20 or self.x == screen.WORLDWIDTH-20  or self.y == 20 or self.y == screen.WORLDWIDTH-20:
+    def stay_in_bounds(self):
+        self.x = max(min(screen.WORLDWIDTH - 20, self.x), 20)
+        self.y = max(min(screen.WORLDHEIGHT - 20, self.y), 20)
+
+    def pick_direction(self):
+        self.angle += random.uniform(-1 * MOVE_ANGLE, MOVE_ANGLE)
+        if self.x == 20 or self.x == screen.WORLDWIDTH - 20 or self.y == 20 or self.y == screen.WORLDWIDTH - 20:
             self.angle += math.pi
-
-        if self.sprinting:
-            self.x += self.sprintspeed * math.cos(self.angle)
-            self.y += -1 * self.sprintspeed * math.sin(self.angle)
-        else:
-            self.x += self.speed * math.cos(self.angle)
-            self.y += -1 * self.speed * math.sin(self.angle)
-
-        self.x = max(min(screen.WORLDWIDTH-20, self.x), 20)
-        self.y = max(min(screen.WORLDHEIGHT-20, self.y), 20)
 
     def collision(self, other, called=False):
         if called:
@@ -132,12 +152,12 @@ class Animal(Species):
 
 class Cheetah(Animal):
     def __init__(self, x, y, size, cam):
-        super().__init__(x, y, [Impala], 70, 5, size, (255,0,0), cam, eyesight_angle=210, eyesight_dist=163, ticksToMate=16000)
+        super().__init__(x, y, [Impala], 70, 5, size, (255,0,0), cam, eyesight_angle=210, eyesight_dist=163, ticksToMate=1600)
 
 
 class Impala(Animal):
     def __init__(self, x, y, size, cam):
-        super().__init__(x, y, [], 55, 4, size, (0, 255, 0), cam, food_needed=0, ticksToMate=30000)
+        super().__init__(x, y, [], 55, 4, size, (0, 255, 0), cam, food_needed=0, ticksToMate=3000)
 
 
 
